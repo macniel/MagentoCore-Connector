@@ -4,6 +4,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLSession;
 import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -282,13 +283,32 @@ public class MagentoCore {
           }
           
           
-          System.out.println("\t" + address.getFirstname() 
-                             + (address.getMiddlename()!="" ? " " + address.getMiddlename():"")
-                             + (address.getLastname()!="" ? " " + address.getLastname():""));
-          System.out.println("\t" + address.getStreet());
-          System.out.println("\t" + address.getPostcode() + " " + address.getCity());
-          System.out.println("\t" + c.getCountryByCountryId(address.getCountryId()).getName());
-          
+        System.out.println("\t" + address.getFirstname() 
+                            + (address.getMiddlename()!="" ? " " + address.getMiddlename():"")
+                            + (address.getLastname()!="" ? " " + address.getLastname():""));
+        System.out.println("\t" + address.getStreet());
+        System.out.println("\t" + address.getPostcode() + " " + address.getCity());
+        System.out.println("\t" + c.getCountryByCountryId(address.getCountryId()).getName());
+	
+        Orders orders = core.getOrders(customer.getCustomerId());
+        SimpleDateFormat sdf = new SimpleDateFormat("d.MM.yyyy");
+        for ( Order order : orders ) {
+          System.out.printf("Bestellung am %s umfasst %d Produkt%s %.2f %3s :\n"
+                            ,sdf.format(order.getCreatedAt())
+                            ,order.getItemCount() 
+                            ,(order.getItemCount()!=1?"e":"") 
+                            ,order.getTotalDue()
+                            ,order.getCurrencyCode());
+          Cart cart = core.getCart(order.getQuoteId());
+          for ( CartContent cc : cart) {
+            Products ps = core.getProducts(cc.getProductId());
+            for ( Product product : ps ) {
+              if ( product.getType().equals("virtual") )
+                System.out.print("\t"); 
+              System.out.println("\t"+ product.getName());
+            }
+          }
+        }
         }
       }
       
