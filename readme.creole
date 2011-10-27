@@ -1,0 +1,20 @@
+= Simple MagentoCore Connector
+**MagentoCore Connector** or //MCC// is a simple Magento API Wrapper for Java based on its exposed
+XMLRPC communication.
+
+== Requirements
+
+* xmlrpc-1.1 (included)
+
+== Usage
+
+import org.macniel.magentocore and org.macniel.magentocore.model 
+to your project and construct a //MagentoCore// object. To bind this object to a xmlrpc interface
+you have to call MagentoCore.connect with the string or url to the xmlrpc interface.
+
+You may now login with your apiusername and apikey to explore your Magento based Webshop.
+
+== Current Implementation
+
+Currently only the customer, customer_address, cart, sales_order, catalog_product, and directory_*
+resources are readable. 
